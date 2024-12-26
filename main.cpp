@@ -14,7 +14,6 @@ path operator""_p(const char* data, std::size_t sz) {
     return path(data, data + sz);
 }
 
-// напишите эту функцию
 bool Preprocess(const path& in_file, const path& out_file, const vector<path>& include_directories){
 
     static regex include_file(R"/(\s*#\s*include\s*"([^"]*)"\s*)/");    // #include "..." файл
@@ -23,6 +22,9 @@ bool Preprocess(const path& in_file, const path& out_file, const vector<path>& i
     smatch m_lib;
     ifstream input(in_file);
     ofstream writer(out_file, ios::out | ios::app);
+    if(!writer.is_open()){
+        return false;
+    }
     string line;
     int line_num = 1;
     while (getline(input, line))
@@ -57,8 +59,6 @@ bool Preprocess(const path& in_file, const path& out_file, const vector<path>& i
             path include = string(m_lib[1]);
             path parent_path = in_file.parent_path();
             path include_path = parent_path / include;
-            //cout << include_path << endl;
-            //Preprocess(include_path, out_file, include_directories);
             if(!exists(include_path)){
                 bool flag = false;
                 for(auto p: include_directories){
